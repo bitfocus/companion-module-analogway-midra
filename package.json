@@ -1,0 +1,11 @@
+{
+  "name": "analogway_midra",
+  "version": "0.1.0",
+  "description": "Analog Way Midra series seamless switcher plugin for Companion",
+  "main": "analogway_midra.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dorian Meid <meid@backstage.org>",
+  "license": "MIT"
+}
