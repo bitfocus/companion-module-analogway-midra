@@ -341,8 +341,8 @@ instance.prototype.actions = function(system) {
 					{ id: '7', label: 'In/Frame 7' },
 					{ id: '8', label: 'In/Frame 8' },
 					{ id: '9', label: 'In/Frame 9' },
-					{ id: '9', label: 'In/Frame 10' },
-					{ id: '9', label: 'Matte' }
+					{ id: '10', label: 'In/Frame 10' },
+					{ id: '11', label: 'Matte' }
 				]
 			}]},
 		'1GCsba': {
