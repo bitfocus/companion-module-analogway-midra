@@ -168,7 +168,7 @@ instance.prototype.actions = function(system) {
 	var self = this;
 	self.system.emit('instance_actions', self.id, {
 				/*
-				 	Note: For self generating commands use option ids 0,1,...,5 and 'value'.
+					 Note: For self generating commands use option ids 0,1,...,5 and 'value'.
 					The command will be of the form [valueof0],[valueof1],...[valueof5],[valueofvalue][CommandID]
 					for set-commands you need a value, for get-commands you mustn't have a value
 					for simple commands the value can be hardcoded in the CommandID, like "1SPtsl".
@@ -180,10 +180,10 @@ instance.prototype.actions = function(system) {
 			 label: 'Take single screen',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Screen',
- 				id: 'screen',
- 				default: '0',
- 				choices: [
+				 label: 'Screen',
+				 id: 'screen',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'S1' },
 					{ id: '1', label: 'S2' }
 				]
@@ -293,28 +293,28 @@ instance.prototype.actions = function(system) {
 			label: 'Switch Layer Input',
 			options: [{
 				type: 'dropdown',
- 				label: 'Screen',
- 				id: 'screen',
- 				default: '0',
- 				choices: [
+				 label: 'Screen',
+				 id: 'screen',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'S1' },
 					{ id: '1', label: 'S2' }
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Preview/Program',
- 				id: 'pvwpgm',
- 				default: '1',
- 				choices: [
+				 label: 'Preview/Program',
+				 id: 'pvwpgm',
+				 default: '1',
+				 choices: [
 					{ id: '1', label: 'Preview' },
 					{ id: '0', label: 'Program' }
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Layer',
- 				id: 'layer',
- 				default: '1',
- 				choices: [
+				 label: 'Layer',
+				 id: 'layer',
+				 default: '1',
+				 choices: [
 					{ id: '0', label: 'Background' },
 					{ id: '1', label: 'PiP Layer 1' },
 					{ id: '2', label: 'PiP Layer 2' },
@@ -326,11 +326,11 @@ instance.prototype.actions = function(system) {
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Input',
- 				id: 'input',
- 				default: '0',
+				 label: 'Input',
+				 id: 'input',
+				 default: '0',
 				tooltip: "Choose the Input for background, PiPs and audio or choose the frame number for logo layers.",
- 				choices: [
+				 choices: [
 					{ id: '0', label: 'No Input' },
 					{ id: '1', label: 'In/Frame 1' },
 					{ id: '2', label: 'In/Frame 2' },
@@ -349,10 +349,10 @@ instance.prototype.actions = function(system) {
 			 label: 'Reload last Preset',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Screen',
- 				id: '0',
- 				default: '0',
- 				choices: [
+				 label: 'Screen',
+				 id: '0',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'S1' },
 					{ id: '1', label: 'S2' }
 				]
@@ -361,10 +361,10 @@ instance.prototype.actions = function(system) {
 			 label: 'Reload Program to Preview',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Screen',
- 				id: '0',
- 				default: '0',
- 				choices: [
+				 label: 'Screen',
+				 id: '0',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'S1' },
 					{ id: '1', label: 'S2' }
 				]
@@ -373,19 +373,19 @@ instance.prototype.actions = function(system) {
 			 label: 'Freeze Screen (all layers)',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Screen',
- 				id: '0',
- 				default: '0',
- 				choices: [
+				 label: 'Screen',
+				 id: '0',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'S1' },
 					{ id: '1', label: 'S2' }
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Status',
- 				id: 'value',
- 				default: '0',
- 				choices: [
+				 label: 'Status',
+				 id: 'value',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'Unfrozen' },
 					{ id: '1', label: 'Frozen' }
 				]
@@ -394,10 +394,10 @@ instance.prototype.actions = function(system) {
 			 label: 'Freeze all screens (all layers)',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Status',
- 				id: 'value',
- 				default: '0',
- 				choices: [
+				 label: 'Status',
+				 id: 'value',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'Unfrozen' },
 					{ id: '1', label: 'Frozen' }
 				]
@@ -406,10 +406,10 @@ instance.prototype.actions = function(system) {
 			 label: 'Freeze Input',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Input',
- 				id: '0',
- 				default: '0',
- 				choices: [
+				 label: 'Input',
+				 id: '0',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: '1' },
 					{ id: '1', label: '2' },
 					{ id: '2', label: '3' },
@@ -423,10 +423,10 @@ instance.prototype.actions = function(system) {
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Status',
- 				id: 'value',
- 				default: '0',
- 				choices: [
+				 label: 'Status',
+				 id: 'value',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'Unfrozen' },
 					{ id: '1', label: 'Frozen' }
 				]
@@ -435,19 +435,19 @@ instance.prototype.actions = function(system) {
 			 label: 'Freeze Layer',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Screen',
- 				id: '0',
- 				default: '0',
- 				choices: [
+				 label: 'Screen',
+				 id: '0',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'S1' },
 					{ id: '1', label: 'S2' }
 				]
 			 },{
 				type: 'dropdown',
- 				label: 'Layer',
- 				id: '1',
- 				default: '1',
- 				choices: [
+				 label: 'Layer',
+				 id: '1',
+				 default: '1',
+				 choices: [
 					{ id: '0', label: 'Background' },
 					{ id: '1', label: 'PiP Layer 1' },
 					{ id: '2', label: 'PiP Layer 2' },
@@ -459,10 +459,10 @@ instance.prototype.actions = function(system) {
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Status',
- 				id: 'value',
- 				default: '0',
- 				choices: [
+				 label: 'Status',
+				 id: 'value',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'Unfrozen' },
 					{ id: '1', label: 'Frozen' }
 				]
@@ -471,10 +471,10 @@ instance.prototype.actions = function(system) {
 			 label: 'Switch Input Plug',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Input',
- 				id: '0',
- 				default: '0',
- 				choices: [
+				 label: 'Input',
+				 id: '0',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: '1' },
 					{ id: '1', label: '2' },
 					{ id: '2', label: '3' },
@@ -488,10 +488,10 @@ instance.prototype.actions = function(system) {
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Plug',
- 				id: 'value',
- 				default: '0',
- 				choices: [
+				 label: 'Plug',
+				 id: 'value',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'Analog (HD-15)' },
 					{ id: '1', label: 'DVI' },
 					{ id: '2', label: 'SDI' },
@@ -504,19 +504,19 @@ instance.prototype.actions = function(system) {
 			 tooltip: "This command doesn't sync with Quick frame for all screens!",
 			 options: [{
 				type: 'dropdown',
- 				label: 'Screen',
- 				id: '0',
- 				default: '0',
- 				choices: [
+				 label: 'Screen',
+				 id: '0',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'S1' },
 					{ id: '1', label: 'S2' }
 				]
 			},{
 				type: 'dropdown',
- 				label: 'Status',
- 				id: 'value',
- 				default: '0',
- 				choices: [
+				 label: 'Status',
+				 id: 'value',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'Quick Frame Off' },
 					{ id: '1', label: 'Quick Frame On' }
 				]
@@ -526,10 +526,10 @@ instance.prototype.actions = function(system) {
 			 tooltip: "This command doesn't sync with Quick frame for a single screen!",
 			 options: [{
 				type: 'dropdown',
- 				label: 'Status',
- 				id: 'value',
- 				default: '0',
- 				choices: [
+				 label: 'Status',
+				 id: 'value',
+				 default: '0',
+				 choices: [
 					{ id: '0', label: 'Quick Frame Off' },
 					{ id: '1', label: 'Quick Frame On' }
 				]
@@ -539,10 +539,10 @@ instance.prototype.actions = function(system) {
 			 tooltip: 'Midra devices can only show one layer with the correct source. Here you can select which one.',
 			 options: [{
 				type: 'dropdown',
- 				label: 'Layer',
- 				id: 'value',
- 				default: '1',
- 				choices: [
+				 label: 'Layer',
+				 id: 'value',
+				 default: '1',
+				 choices: [
 					{ id: '0', label: 'Background' },
 					{ id: '1', label: 'PiP Layer 1' },
 					{ id: '2', label: 'PiP Layer 2' },
@@ -650,13 +650,6 @@ instance.prototype.sendcmd = function(cmd) {
 		}
 
 	}
-};
-
-
-instance.module_info = {
-	label: 'Analog Way Midra',
-	id: 'analogway_midra',
-	version: '0.1.0'
 };
 
 instance_skel.extendedBy(instance);
