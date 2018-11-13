@@ -5,7 +5,7 @@
 	"api_version": "1.0.0",
 	"keywords": [ "Protocol", "Image Processing" ],
 	"manufacturer": "Analog Way",
-	"product": "Midra",
+	"product": [ "Midra","Eikos2","Saphyr","Pulse2","SmartMatriX2","QuickMatriX","QuickVu","Saphyr - H","Pulse2 - H","SmartMatriX2 - H","SmartMatriX2 - H" ],
 	"shortname": "midra",
 	"homepage": "http://www.analogway.com/en/products/event-controllers/rcs2-midra-platform/",
   "description": "Analog Way Midra series seamless switcher plugin for Companion",
