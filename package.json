@@ -1,18 +1,35 @@
 {
-  "name": "analogway-midra",
-	"legacy": ["analogway_midra"],
-  "version": "1.0.0",
+	"name": "analogway-midra",
+	"legacy": [
+		"analogway_midra"
+	],
+	"version": "1.0.1",
 	"api_version": "1.0.0",
-	"keywords": [ "Protocol", "Image Processing" ],
+	"keywords": [
+		"Protocol",
+		"Image Processing"
+	],
 	"manufacturer": "Analog Way",
-	"product": [ "Midra","Eikos2","Saphyr","Pulse2","SmartMatriX2","QuickMatriX","QuickVu","Saphyr - H","Pulse2 - H","SmartMatriX2 - H","SmartMatriX2 - H" ],
+	"product": [
+		"Midra",
+		"Eikos2",
+		"Saphyr",
+		"Pulse2",
+		"SmartMatriX2",
+		"QuickMatriX",
+		"QuickVu",
+		"Saphyr - H",
+		"Pulse2 - H",
+		"SmartMatriX2 - H",
+		"SmartMatriX2 - H"
+	],
 	"shortname": "midra",
 	"homepage": "http://www.analogway.com/en/products/event-controllers/rcs2-midra-platform/",
-  "description": "Analog Way Midra series seamless switcher plugin for Companion",
-  "main": "analogway_midra.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Dorian Meid <meid@backstage.org>",
-  "license": "MIT"
+	"description": "Analog Way Midra series seamless switcher plugin for Companion",
+	"main": "analogway_midra.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Dorian Meid <meid@backstage.org>",
+	"license": "MIT"
 }
