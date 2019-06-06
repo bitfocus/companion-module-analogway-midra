@@ -207,7 +207,7 @@ instance.prototype.actions = function(system) {
 			},{
 				type: 'dropdown',
 				label: 'PGM/PVW',
-				id: 'pgmpvw',
+				id: 'pvwpgm',
 				default: '1',
 				tooltip: 'Select wether the memory schould be loaded into the preview or program of the screen',
 				choices: [ { id: '0', label: 'Program' }, { id: '1', label: 'Preview' }]
