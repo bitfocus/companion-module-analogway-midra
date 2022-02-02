@@ -24,12 +24,19 @@
 		"SmartMatriX2 - H"
 	],
 	"shortname": "midra",
-	"homepage": "http://www.analogway.com/en/products/event-controllers/rcs2-midra-platform/",
+	"homepage": "https://github.com/bitfocus/companion-module-analogway-midra#readme",
 	"description": "Analog Way Midra series seamless switcher plugin for Companion",
 	"main": "analogway_midra.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Dorian Meid <meid@backstage.org>",
-	"license": "MIT"
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/bitfocus/companion-module-analogway-midra/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-analogway-midra.git"
+	}
 }
