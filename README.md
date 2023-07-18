@@ -1,2 +1,2 @@
 # companion-module-analogway-midra
-See HELP.md and LICENSE
+See companion/HELP.md and LICENSE
