@@ -3,9 +3,11 @@
 	"legacy": [
 		"analogway_midra"
 	],
-	"version": "2.0.0",
+	"version": "2.1.0-beta1",
+	"type": "module",
 	"main": "analogway_midra.js",
 	"scripts": {
+		"build": "companion-module-build",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Dorian Meid <meid@backstage.org>",
@@ -15,9 +17,9 @@
 		"url": "git+https://github.com/bitfocus/companion-module-analogway-midra.git"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.4.1"
+		"@companion-module/base": "^2.1.1"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^2.8.0"
+		"@companion-module/tools": "^3.1.0"
 	}
 }

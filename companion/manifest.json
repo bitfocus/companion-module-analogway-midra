@@ -1,4 +1,5 @@
 {
+	"type": "connection",
 	"id": "analogway-midra",
 	"name": "analogway-midra",
 	"shortname": "midra",
@@ -17,9 +18,9 @@
 		"analogway_midra"
 	],
 	"runtime": {
-		"type": "node18",
+		"type": "node22",
 		"api": "nodejs-ipc",
-		"apiVersion": "0.0.0",
+		"apiVersion": "2.1.1",
 		"entrypoint": "../analogway_midra.js"
 	},
 	"manufacturer": "Analog Way",

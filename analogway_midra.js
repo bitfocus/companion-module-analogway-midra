@@ -1,11 +1,13 @@
-const { InstanceBase, Regex, runEntrypoint, InstanceStatus, TCPHelper } = require('@companion-module/base')
+import { InstanceBase, Regex, InstanceStatus, TCPHelper } from '@companion-module/base'
+import net from 'net'
+import { getFeedbacks } from './feedbacks.js'
 
 class MidraInstance extends InstanceBase {
 	constructor(internal) {
 		super(internal)
 	}
 
-	init(config) {
+	async init(config, isFirstInit, secrets) {
 		let self = this
 
 		self.config = config
@@ -16,13 +18,55 @@ class MidraInstance extends InstanceBase {
 		this.modelnum
 		this.modelname = ''
 
+		// Per-screen memory tracking (2 screens: S1, S2). 255 means "no memory loaded",
+		// matching the device's own sentinel value. See updatePresetMemories().
+		this.memoriesBuf0 = [255, 255]
+		this.memoriesBuf1 = [255, 255]
+		this.programBuffer = [0, 0]
+		this.memoriesPGM = [255, 255]
+		this.memoriesPVW = [255, 255]
+
 		self.init_actions() // export actions
+		self.setFeedbackDefinitions(getFeedbacks(self))
 		self.init_tcp()
+		self.init_gateway()
+	}
+
+	//Derives which memory is currently in program/preview per screen from the raw
+	//per-buffer memory identity (memoriesBuf0/1) and the take/t-bar status (programBuffer).
+	updatePresetMemories() {
+		let self = this
+		for (let screen = 0; screen < 2; screen += 1) {
+			if (self.programBuffer[screen] === 0) {
+				self.memoriesPGM[screen] = self.memoriesBuf0[screen]
+				self.memoriesPVW[screen] = self.memoriesBuf1[screen]
+			} else {
+				self.memoriesPGM[screen] = self.memoriesBuf1[screen]
+				self.memoriesPVW[screen] = self.memoriesBuf0[screen]
+			}
+		}
+		self.checkFeedbacks('memory_active')
+	}
+
+	// Splits a raw TCP byte stream into whole \r\n-terminated lines, buffering
+	// any partial line across calls. Shared by the Midra connection and the
+	// gateway client connections so the line-framing logic only exists once.
+	makeLineSplitter(onLine) {
+		let receivebuffer = ''
+		return (chunk) => {
+			let i = 0, line = '', offset = 0
+			receivebuffer += chunk
+			while ( (i = receivebuffer.indexOf('\r\n', offset)) !== -1) {
+				line = receivebuffer.substring(offset, i)
+				offset = i + 2
+				onLine(line.toString())
+			}
+			receivebuffer = receivebuffer.substring(offset)
+		}
 	}
 
 	init_tcp() {
 		let self = this
-		let receivebuffer = ''
 		self.updateStatus(InstanceStatus.Connecting)
 
 		if (self.socket !== undefined) {
@@ -48,19 +92,14 @@ class MidraInstance extends InstanceBase {
 			})
 
 			// separate buffered stream into lines with responses
-			self.socket.on('data', (chunk) => {
-				let i = 0, line = '', offset = 0
-				receivebuffer += chunk
-				while ( (i = receivebuffer.indexOf('\r\n', offset)) !== -1) {
-					line = receivebuffer.substring(offset, i - offset)
-					offset = i + 1
-					self.socket.emit('receiveline', line.toString())
-				}
-				receivebuffer = receivebuffer.substring(offset)
-			})
+			self.socket.on('data', self.makeLineSplitter((line) => {
+				self.socket.emit('receiveline', line)
+			}))
 
 			self.socket.on('receiveline', (line) => {
 				self.log('debug', "Received line from Midra: " + line)
+
+				self.broadcastToGateway(line)
 
 				if (line.match(/\*1/)) {
 					self.log('info',"Ethernet connection to "+ self.config.label +" established. Device ready.")
@@ -94,6 +133,28 @@ class MidraInstance extends InstanceBase {
 					//There is no parameter readback runnning, it can be started now
 				}
 
+				if (line.match(/PIpid\d+,0,\d+$/)) {
+					//Information about the memory loaded into preset buffer 0 of a screen
+					const [screen, , memory] = line.replace('PIpid', '').split(',')
+					self.memoriesBuf0[Number(screen)] = Number(memory)
+					self.updatePresetMemories()
+				}
+				if (line.match(/PIpid\d+,1,\d+$/)) {
+					//Information about the memory loaded into preset buffer 1 of a screen
+					const [screen, , memory] = line.replace('PIpid', '').split(',')
+					self.memoriesBuf1[Number(screen)] = Number(memory)
+					self.updatePresetMemories()
+				}
+				if (line.match(/(SPCtb|GCtba)\d+,\d+$/)) {
+					//Take/t-bar status: which preset buffer (0 or 1) is currently live in program for a screen.
+					//SPCtb is the settled position after a discrete take (0 or 65535); GCtba is the live
+					//analog position while a t-bar is being dragged, same value range. A take swaps
+					//program/preview without re-announcing PIpid, so this has to be tracked separately.
+					const command = line.match(/SPCtb/) ? 'SPCtb' : 'GCtba'
+					const [screen, value] = line.replace(command, '').split(',')
+					self.programBuffer[Number(screen)] = Number(value) < 32768 ? 0 : 1
+					self.updatePresetMemories()
+				}
 
 				if (line.match(/E\d{2}/)) {
 					switch (parseInt(line.match(/E(\d{2})/)[1])) {
@@ -110,16 +171,75 @@ class MidraInstance extends InstanceBase {
 		}
 	}
 
-	configUpdated(config) {
+	// Midra units only accept a single direct TCP connection. This opens a local
+	// TCP port that other Midra clients (e.g. RCS2, or a second Companion) can
+	// connect to instead of the unit itself: their commands get relayed to the
+	// unit, and everything the unit sends back gets mirrored to all of them.
+	init_gateway() {
+		let self = this
+
+		if (self.gatewayServer !== undefined) {
+			self.gatewayServer.close()
+			self.gatewayServer = undefined
+		}
+
+		self.gatewayClients = new Set()
+
+		if (!self.config.gatewayEnabled) {
+			return
+		}
+
+		const port = parseInt(self.config.gatewayPort) || 10500
+
+		self.gatewayServer = net.createServer((client) => {
+			self.log('info', 'Gateway client connected from ' + client.remoteAddress)
+			self.gatewayClients.add(client)
+
+			client.on('data', self.makeLineSplitter((line) => {
+				self.log('debug', 'Received line from gateway client: ' + line)
+				self.sendcmd(line)
+			}))
+
+			client.on('error', (err) => {
+				self.log('debug', 'Gateway client error: ' + err.message)
+			})
+
+			client.on('close', () => {
+				self.gatewayClients.delete(client)
+				self.log('info', 'Gateway client disconnected')
+			})
+		})
+
+		self.gatewayServer.on('error', (err) => {
+			self.log('error', 'Gateway server error: ' + err.message)
+		})
+
+		self.gatewayServer.listen(port, () => {
+			self.log('info', 'Gateway listening on port ' + port + ' for other Midra clients (e.g. RCS2)')
+		})
+	}
+
+	// Mirror a line received from the Midra unit to every connected gateway client
+	broadcastToGateway(line) {
+		let self = this
+		if (self.gatewayClients === undefined) return
+		for (const client of self.gatewayClients) {
+			client.write(line + '\r\n')
+		}
+	}
+
+	async configUpdated(config, secrets) {
 		const self = this
 		if (
 			(config.host && config.host !== self.config.host) ||
-			(config.variant && config.variant !== self.config.variant)
+			(config.variant && config.variant !== self.config.variant) ||
+			(config.gatewayEnabled !== self.config.gatewayEnabled) ||
+			(config.gatewayPort !== self.config.gatewayPort)
 		) {
 			self.log('debug', 'Config updated, destroying and reiniting..')
 			self.config = config
-			self.destroy()
-			self.init(self.config)
+			await self.destroy()
+			await self.init(self.config, false, secrets)
 		}
 	}
 
@@ -153,16 +273,43 @@ class MidraInstance extends InstanceBase {
 					{id:'285' , label:"QuickMatriX - H"},
 					{id:'262' , label:"QuickVu"}
 				]
+			},{
+				type: 'checkbox',
+				label: 'Enable local Gateway',
+				id: 'gatewayEnabled',
+				width: 6,
+				default: false,
+				disableAutoExpression: true,
+				tooltip: 'Midra units only accept one direct TCP connection at a time. Enable this to let Companion hold that connection and open a local port for other Midra clients (e.g. RCS2) to connect through instead of connecting to the unit directly.'
+			},{
+				type: 'textinput',
+				label: 'Gateway Port',
+				id: 'gatewayPort',
+				width: 4,
+				default: '10500',
+				regex: Regex.PORT,
+				isVisibleExpression: '$(options:gatewayEnabled) == true',
+				tooltip: 'Port other Midra clients should connect to. Use 10500 (the Midra units\' own port) so RCS2 needs no configuration change beyond pointing it at this Companion host.'
 			}
 		]
 	}
 
 	// When module gets deleted
-	destroy() {
+	async destroy() {
 		let self = this
 
 		if (self.socket !== undefined) {
 			self.socket.destroy()
+		}
+
+		if (self.gatewayServer !== undefined) {
+			if (self.gatewayClients !== undefined) {
+				for (const client of self.gatewayClients) {
+					client.destroy()
+				}
+			}
+			self.gatewayServer.close()
+			self.gatewayServer = undefined
 		}
 
 		self.log('debug', "destroy " + self.id);
@@ -676,4 +823,4 @@ class MidraInstance extends InstanceBase {
 	}
 }
 
-runEntrypoint(MidraInstance, [])
+export default MidraInstance
