@@ -3,7 +3,7 @@
 	"legacy": [
 		"analogway_midra"
 	],
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"main": "analogway_midra.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -15,9 +15,9 @@
 		"url": "git+https://github.com/bitfocus/companion-module-analogway-midra.git"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.4.1"
+		"@companion-module/base": "~1.15.0"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^2.8.0"
+		"@companion-module/tools": "^2.9.0"
 	}
 }
