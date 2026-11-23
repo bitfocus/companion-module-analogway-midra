@@ -3,7 +3,7 @@
 	"legacy": [
 		"analogway_midra"
 	],
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"main": "analogway_midra.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
